@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EmployeeApi.DataAccess.Interfaces
+namespace OperationalsApi.DataAccess.Interfaces
 {
     public interface IDepartmentRepository
     {
         Task<IEnumerable<Department>> GetAllDepartments();
 
         Task<Department> GetDepartment(int id);
+
+        Task<Department> GetDepartmentByName(string departmentName);
 
         Task AddDepartment(Department item);
 

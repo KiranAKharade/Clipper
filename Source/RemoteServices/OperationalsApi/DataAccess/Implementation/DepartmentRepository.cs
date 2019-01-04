@@ -1,4 +1,4 @@
-﻿using EmployeeApi.DataAccess.Interfaces;
+﻿using OperationalsApi.DataAccess.Interfaces;
 using Models.Core.Operationals;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -7,15 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EmployeeApi.DataAccess.Implementation
+namespace OperationalsApi.DataAccess.Implementation
 {
     public class DepartmentRepository : IDepartmentRepository
     {
-        private readonly EmployeeDBContext _context = null;
+        private readonly DepartmentDBContext _context = null;
 
         public DepartmentRepository()
         {
-            _context = EmployeeDBContext.Instance;
+            _context = DepartmentDBContext.Instance;
         }
 
         public async Task AddDepartment(Department item)
@@ -59,6 +59,23 @@ namespace EmployeeApi.DataAccess.Implementation
             try
             {
                 var filter = Builders<Department>.Filter.Eq("ID", id);
+
+                return await _context.Departments
+                                .Find(filter)
+                                .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+            }
+        }
+
+        public async Task<Department> GetDepartmentByName(string departmentName)
+        {
+            try
+            {
+                var filter = Builders<Department>.Filter.Eq("Name", departmentName);
 
                 return await _context.Departments
                                 .Find(filter)

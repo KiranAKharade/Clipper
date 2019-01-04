@@ -1,47 +1,27 @@
-﻿using Common;
-using Common.Logging;
-using EmployeeApi.DataAccess.Implementation;
-using EmployeeApi.DataAccess.Interfaces;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using OperationalsApi.DataAccess.Implementation;
+using OperationalsApi.DataAccess.Interfaces;
+using Common.Logging;
 using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Swashbuckle.AspNetCore.Swagger;
 
-namespace EmployeeApi
+namespace OperationalsApi
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-
-            Configuration = builder.Build();
-
-            Log.Logger = new LoggerConfiguration()
-                    .WriteTo.Async(a => a.File(LoggingConfigurator.GetConfiguration("EmployeeApi").Path + "EmployeeApi_log_.log", 
-                                rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true), blockWhenFull: true)
-                    .Enrich.FromLogContext()
-                    .MinimumLevel.ControlledBy(new LoggingLevelSwitch() { MinimumLevel = LogEventLevel.Information })
-                    .Enrich.WithEnvironmentUserName()
-                    .Enrich.WithMachineName()
-                    .Enrich.WithThreadId()
-                    .CreateLogger();
-
-            Log.Information("EmployeeApi starting up...");
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
@@ -61,11 +41,11 @@ namespace EmployeeApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Employee Api",
-                    Contact = new Contact
+                    Title = "Operationals Api",
+                    Contact = new OpenApiContact
                     {
                         Name = "Kiran Kharade",
                         Email = "KiranAKharade@gmail.com"
@@ -77,7 +57,7 @@ namespace EmployeeApi
             //.AddIdentityServerAuthentication(options =>
             //{
             //    options.Authority = "https://localhost:49333";
-            //    options.ApiName = "EmployeeApi";
+            //    options.ApiName = "OperationalsApi";
             //});
 
             AddMongoDBRelatedServices(services);
@@ -85,9 +65,10 @@ namespace EmployeeApi
 
         private void AddMongoDBRelatedServices(IServiceCollection services)
         {
-            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
+            services.AddTransient<IDepartmentRepository, DepartmentRepository>();
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseCors("CorsPolicy");
@@ -102,14 +83,14 @@ namespace EmployeeApi
             {
                 app.UseHsts();
             }
-            
+
             app.UseMiddleware<SerilogMiddleware>();
             //app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployeeApi API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OperationalsApi API V1");
                 c.RoutePrefix = string.Empty;
             });
 

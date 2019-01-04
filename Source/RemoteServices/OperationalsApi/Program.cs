@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace EmployeeApi
+namespace OperationalsApi
 {
     public class Program
     {
@@ -16,8 +16,8 @@ namespace EmployeeApi
                 .UseStartup<Startup>()
                 .UseUrls(new string[]
                     {
-                        AddressResolver.GetAddress("EmployeeApi", true),
-                        AddressResolver.GetAddress("EmployeeApi", false),
+                        AddressResolver.GetAddress("OperationalsApi", true),
+                        AddressResolver.GetAddress("OperationalsApi", false),
                     })
             ;
     }

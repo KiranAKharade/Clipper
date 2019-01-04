@@ -16,7 +16,8 @@ namespace Models.Core.HR.Attendance
         MaternalLeave,
         CompensatoryOff,
         EducationalLeave,
-        Sabattical
+        Sabattical,
+        UnpaidLeave
     }
 
     public enum LeaveStatus
@@ -44,8 +45,17 @@ namespace Models.Core.HR.Attendance
 
         public LeaveType LeaveType { get; set; }
 
+        public bool IsHalfDay { get; set; }
+
         public LeaveStatus LeaveStatus { get; set; }
 
         public string Description { get; set; }
+
+        public int ApprovingAuthorityID { get; set; }
+
+        public int NoOfDays { get; set; }
+        
+        [BsonDateTimeOptions]
+        public DateTime CreationDate { get; set; }
     }
 }
