@@ -1,6 +1,4 @@
-# Klipper
+# Clipper
 
-KL India Platform for Personnel Enterprise Resources
+Generic framework for server side enterprise systems
 
-Modules
-1. Basic Leave and Attendance Management Application
